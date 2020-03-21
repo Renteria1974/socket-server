@@ -19,7 +19,7 @@ import cors from 'cors';
 
 
 // Constante del tipo "Servidor"
-const server = new Server();
+const server = Server.instance;
 
 
 
