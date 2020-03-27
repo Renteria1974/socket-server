@@ -18,7 +18,7 @@ import socketIO from 'socket.io';
 import http from 'http';
 
 // Importamos todos lo que se encuentre en el archivo archivo "socket.ts" que se localiza edentro del a carpeta "sockets"
-// "as socket"
+// "as socket"  = 
 import * as socket from '../sockets/socket';
 
 
@@ -33,7 +33,7 @@ export default class Server
     public app:         express.Application;    // Es del tipo de la aplicación de Express
     public port:        number;                 // Puerto donde se va a estar corriendo la aplicación
 
-    public io:          socketIO.Server;        // Variable de tipo socket.io , es la propiedad encargada de emitir eventos 
+    public io:          socketIO.Server;        // Variable de tipo socket.io , es la propiedad encargada de emitir eventos
                                                 // y escuchar otras cosas
     private httpServer: http.Server;            // Esta propiedad sólo va a ser válida dentro de esta clase
                                                 // En teoría este servidor es el que se va a levantar y no el "app"
@@ -53,7 +53,7 @@ export default class Server
 
         // Esta es la parte más importante de la configuración de los sockets: configurar el "io"
         // El "io" recibe la configuración del HTTPSERVER
-        this.io =  socketIO( this.httpServer );   
+        this.io =  socketIO( this.httpServer );
 
         // Llamamos al método que "escucha" sockets
         this.escucharSockets();
@@ -74,22 +74,27 @@ export default class Server
     // Es decir, aquí el servidor (NODE) "escucha" los mensajes que el "cliente" (ANGULAR) emite
     private escucharSockets()
     {
-        console.log('Escuchando Sockets....');
+        console.log('Escuchando Conexiones - Sockets');
 
         // Escuchamos un evento
         // "cliente" = Objeto de tipo Socket que se retorna
         this.io.on('connection', cliente =>
-        {
-            console.log('Cliente conectado');
+        {            
+            // Mostramos el ID del cliente (lo genera el socket, son ID únicos), incluso si se recarga la página dle navegador vuelve a generar otro ID
+            // console.log( cliente.id );
 
-            // Para que esté al pendiente de los mensajes
-            // "cliente"    = Es un objeto de tipo Socket 
+            // **** Para agregar al usuario a la lista de clientes conectados ****
+            // "cliente"    = Es un objeto de tipo Socket
+            socket.conectarCliente( cliente );
+
+            // **** Para que esté al pendiente de todos los eventos del SOCKET ****
+            // "cliente"    = Es un objeto de tipo Socket
             // "this.io"    = Mandamos como referencia el Servidor de Sockets
-            socket.mensaje( cliente, this.io );
+            socket.capturaEventos( cliente, this.io );
 
-            // Desconectar al cliente
+            // **** Desconectar al cliente ****
             // "cliente" = Es el mismo que indicamos arriba en la conexión
-            socket.desconectar( cliente );
+            socket.desconectar( cliente );            
         });
     }
 

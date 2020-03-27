@@ -2,8 +2,8 @@
 // Aquí crearemos nuestros API REST FULL
 
 
-// Router   = Función que me permite crear objetos de tipo "Router"
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response } from 'express';    // Router   = Función que me permite crear objetos de tipo "Router"
+import Server from '../classes/server';                 // Importamos la clase "Server" definida en el archivo "server.ts" que está dentro de la carpeta "classes"
 
 
 // Constante que vamos a ocupar para crear los Servicios REST (API ENDPOINTS)
@@ -35,6 +35,25 @@ router.post('/mensajes', ( peticion: Request, respuesta: Response ) =>
     const cuerpo    = peticion.body.cuerpo;
     const de        = peticion.body.de;
 
+    // Definimos el DATA del mensaje privado
+    const payload =
+    {
+        cuerpo,
+        de
+    };
+
+
+    // Hacemos una referencia al Servidor, creamos una constante que toma el valor de la misma instancia que tenemos corriendo en la aplicación de NODE
+    const server    =  Server.instance;
+
+    // Para mandar un mensaje a uno o todos los usuarios
+    // ".io"                = Es el servidor de sockets        
+    // ".emit"              = Envia el mensaje
+    // "mensaje-nuevo"      = Definido en la aplicación de ANGULAR dentro del archivo "chat.service.ts" en el método "obtenerMesaje"
+    // "payload"            = Es la DATA, los datos que se están enviando en el mensaje
+    server.io.emit( 'mensaje-nuevo', payload );
+
+
     // Mandamos un mensaje de respuesta
     respuesta.json({
         ok:         true,
@@ -59,6 +78,27 @@ router.post('/mensajes/:id', ( peticion: Request, respuesta: Response ) =>
     const cuerpo    = peticion.body.cuerpo;
     const de        = peticion.body.de;
 
+
+    // Definimos el DATA del mensaje privado
+    const payload =
+    {
+        de,
+        cuerpo
+    };
+
+    // Hacemos una referencia al Servidor, creamos una constante que toma el valor de la misma instancia que tenemos corriendo en la aplicación de NODE
+    const server    =  Server.instance;
+
+    // para mandar un mensaje a uno o todos los usuarios
+    // ".io"                = Es el servidor de sockets
+    // ".in"                = Manda un mensaje a un usuario que se encuentre en un canal particular
+    // "id"                 = Es el ID del usuario, el que se recibe por la URL
+    // ".emit"              = Envia el mensaje
+    // "mensaje-privado"    = Definido en la aplicación de ANGULAR dentro del archivo "chat.service.ts" en el método "obtenerMesajesPrivados"
+    // "payload"            = Es la DATA, los datos que se están enviando en el mensaje
+    server.io.in( id ).emit( 'mensaje-privado', payload );
+
+    
     // Mandamos un mensaje de respuesta
     respuesta.json({
         ok:         true,
