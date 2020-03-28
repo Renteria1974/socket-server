@@ -84,7 +84,7 @@ export default class Server
             // console.log( cliente.id );
 
             // **** Para agregar al usuario a la lista de clientes conectados ****
-            // "cliente"    = Es un objeto de tipo Socket
+            // "cliente"    = Es un objeto de tipo Socket            
             socket.conectarCliente( cliente );
 
             // **** Para que esté al pendiente de todos los eventos del SOCKET ****
@@ -94,7 +94,8 @@ export default class Server
 
             // **** Desconectar al cliente ****
             // "cliente" = Es el mismo que indicamos arriba en la conexión
-            socket.desconectar( cliente );            
+            // "this.io"    = Mandamos como referencia el Servidor de Sockets
+            socket.desconectar( cliente, this.io );            
         });
     }
 

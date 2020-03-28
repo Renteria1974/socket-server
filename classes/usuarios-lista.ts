@@ -54,9 +54,10 @@ export class UsuariosLista
 
 
   // Método para obtener toda la lista de Usuarios conectados
-  private obtenerLista()
+  public obtenerLista()
   {
-    return this.lista;  //Retornamos la lista 
+    // "usuario => usuario.nombre !== 'sin-nombre'" = Regrese los usuarios cuyo nombre sea diferente de 'sin-nombre'
+    return this.lista.filter( usuario => usuario.nombre !== 'sin-nombre' );  //Retornamos la lista 
   }
 
 
